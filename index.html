@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Exercise Home</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="hero">
+    <nav>
+      <div class="logo">Exercise<span>Home</span></div>
+      <a href="#workouts">Workouts</a>
+    </nav>
+    <div class="hero-content">
+      <p class="tag">MOVE • TRAIN • GROW</p>
+      <h1>Apna Workout<br><span>Apni Choice</span></h1>
+      <p class="subtitle">Bina dumbbell ya dumbbell ke saath — apne workout ko choose karo.</p>
+      <a class="scroll-btn" href="#workouts">Start Workout ↓</a>
+    </div>
+  </header>
+
+  <main id="workouts">
+    <section class="section">
+      <div class="section-title">
+        <p class="tag">CHOOSE YOUR STYLE</p>
+        <h2>Workout Select Karo</h2>
+      </div>
+
+      <div class="choice-grid">
+        <button class="choice-card bodyweight" data-type="bodyweight">
+          <div class="icon">🤸</div>
+          <div>
+            <h3>Bina Dumbbell</h3>
+            <p>Bodyweight exercises se workout karo.</p>
+          </div>
+          <span class="arrow">→</span>
+        </button>
+
+        <button class="choice-card dumbbell" data-type="dumbbell">
+          <div class="icon">🏋️</div>
+          <div>
+            <h3>Dumbbell ke Saath</h3>
+            <p>Dumbbell-based exercises choose karo.</p>
+          </div>
+          <span class="arrow">→</span>
+        </button>
+      </div>
+
+      <div id="exercise-panel" class="exercise-panel hidden">
+        <div class="panel-head">
+          <div>
+            <p class="tag" id="panel-tag">WORKOUT</p>
+            <h2 id="panel-title"></h2>
+            <p class="image-note">Exercise preview + recommended sets</p>
+          </div>
+          <button id="close-panel" class="close-btn">×</button>
+        </div>
+        <div id="exercise-list" class="exercise-list"></div>
+      </div>
+    </section>
+
+    <section class="info">
+      <div>
+        <p class="tag">SIMPLE & FLEXIBLE</p>
+        <h2>Apni routine ke hisaab se train karo.</h2>
+      </div>
+      <p>Exercises ko apne fitness level ke according choose karo. Zarurat ho to rest lo aur proper form par focus karo.</p>
+    </section>
+  </main>
+
+  <footer>
+    <div class="logo">Exercise<span>Home</span></div>
+    <p>Train smart. Stay consistent.</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
