@@ -1,124 +1,243 @@
 
 const workouts = {
   bodyweight: {
-    tag: "NO EQUIPMENT",
     title: "Bina Equipment",
+    tag: "HOME WORKOUT",
     exercises: [
-      ["01", "Squats", "3 sets × 10–15 reps"],
-      ["02", "Push-ups", "3 sets × 6–12 reps"],
-      ["03", "Lunges", "3 sets × 8–12 each side"],
-      ["04", "Glute Bridge", "3 sets × 10–15 reps"],
-      ["05", "Plank", "3 rounds × 20–40 sec"],
-      ["06", "Mountain Climbers", "3 rounds × 20–30 sec"]
+      ["01", "Squats", "3 sets × 10 reps"],
+      ["02", "Push-ups", "3 sets × 6 reps"],
+      ["03", "Lunges", "3 sets × 8 each side"],
+      ["04", "Glute Bridge", "3 sets × 10 reps"],
+      ["05", "Plank", "3 sets × 20 seconds"],
+      ["06", "Mountain Climbers", "3 sets × 20 reps"],
+      ["07", "Wall Push-ups", "3 sets × 10 reps"],
+      ["08", "Calf Raises", "3 sets × 12 reps"],
+      ["09", "Bird Dog", "2 sets × 8 each side"],
+      ["10", "Jumping Jacks", "2 sets × 15 reps"]
     ]
   },
   dumbbell: {
-    tag: "DUMBBELL WORKOUT",
-    title: "Dumbbell ke Saath",
+    title: "Dumbbell Workout",
+    tag: "DUMBBELL",
     exercises: [
-      ["01", "Dumbbell Goblet Squat", "3 sets × 8–12 reps"],
-      ["02", "Dumbbell Row", "3 sets × 8–12 reps"],
-      ["03", "Dumbbell Shoulder Press", "3 sets × 8–12 reps"],
-      ["04", "Dumbbell Romanian Deadlift", "3 sets × 8–12 reps"],
-      ["05", "Dumbbell Biceps Curl", "3 sets × 10–15 reps"],
-      ["06", "Dumbbell Floor Press", "3 sets × 8–12 reps"]
+      ["01", "Biceps Curl", "2 sets × 10 reps"],
+      ["02", "Shoulder Press", "2 sets × 8 reps"],
+      ["03", "Dumbbell Row", "2 sets × 10 reps"]
     ]
   }
 };
 
-const details = {
-  "Squats": ["🦵", "Stand with feet about shoulder-width apart. Bend your knees, sit your hips back, then stand up slowly."],
-  "Push-ups": ["💪", "Place your hands on the floor and keep your body straight. Lower yourself comfortably, then push back up. Use a wall or sturdy raised surface if needed."],
-  "Lunges": ["🚶", "Take a comfortable step forward, bend both knees slightly, then return to standing. Alternate legs and keep your balance."],
-  "Glute Bridge": ["🧘", "Lie on your back with knees bent and feet flat. Lift your hips gently, then lower them slowly."],
-  "Plank": ["⏱️", "Keep your body in a straight line while supported on your forearms and toes. Stop if you feel pain."],
-  "Mountain Climbers": ["🏃", "Start in a stable high-plank position. Bring one knee forward at a time, slowly and with control."],
-  "Dumbbell Goblet Squat": ["🏋️", "Hold one dumbbell close to your chest, squat comfortably, then stand up. Use a light weight and good form."],
-  "Dumbbell Row": ["🏋️", "With a light dumbbell, lean forward with a straight back and pull your elbow toward your hip. Repeat on each side."],
-  "Dumbbell Shoulder Press": ["🏋️", "Hold light dumbbells near shoulder level and press upward only through a comfortable range."],
-  "Dumbbell Romanian Deadlift": ["🏋️", "Hold light dumbbells in front of your thighs. Push your hips back while keeping your back neutral, then stand up."],
-  "Dumbbell Biceps Curl": ["💪", "Hold light dumbbells at your sides. Bend your elbows to lift them, then lower slowly."],
-  "Dumbbell Floor Press": ["🏋️", "Lie on the floor with light dumbbells. Press them upward with control, then lower until your upper arms gently touch the floor."]
+const exerciseInfo = {
+  "Squats": ["Pair kandhon jitne kholkar rakho, hips peeche le jao aur phir khade ho jao.", 45],
+  "Push-ups": ["Body seedhi rakho, haathon se push karo. Zarurat ho to wall push-ups se shuru karo.", 60],
+  "Lunges": ["Ek pair aage rakho, dono ghutne aaram se modho aur phir khade ho jao.", 45],
+  "Glute Bridge": ["Peeth ke bal leto, ghutne modo aur hips ko aaram se upar uthao.", 45],
+  "Plank": ["Kohniyon aur pairon ke sahare body seedhi rakho. Saans normal rakho.", 45],
+  "Mountain Climbers": ["Haathon ko zameen par rakhkar ghutne ek-ek karke aage lao.", 45],
+  "Wall Push-ups": ["Deewar par haath rakho, body ko paas lao aur phir push karo.", 45],
+  "Calf Raises": ["Seedhe khade hokar heels upar uthao, phir dheere neeche lao.", 30],
+  "Bird Dog": ["Haathon aur ghutnon par aakar opposite arm aur leg seedhe karo.", 30],
+  "Jumping Jacks": ["Pairon ko bahar-andar le jao aur haathon ko control ke saath uthao.", 45],
+  "Biceps Curl": ["Halka dumbbell pakadkar kohni modho aur dheere neeche lao.", 45],
+  "Shoulder Press": ["Halke dumbbells ko kandhon se control ke saath upar uthao.", 45],
+  "Dumbbell Row": ["Peeth seedhi rakhkar dumbbell ko kohni se peeche kheecho.", 45]
 };
 
-const icons = {
-  "Squats": "🦵",
-  "Push-ups": "💪",
-  "Lunges": "🚶",
-  "Glute Bridge": "🧘",
-  "Plank": "⏱️",
-  "Mountain Climbers": "🏃"
+let timerId = null;
+let secondsLeft = 0;
+let currentSet = 1;
+let totalSets = 3;
+let reps = 10;
+let restSeconds = 45;
+let isResting = false;
+let isRunning = false;
+let currentName = "";
+
+const style = document.createElement("style");
+style.textContent = `
+#workout-modal{position:fixed;inset:0;background:#090d12ed;z-index:99999;overflow:auto;padding:16px;color:white;font-family:Arial}
+#workout-card{max-width:520px;margin:20px auto;background:#171e26;padding:22px;border-radius:18px}
+#workout-card button{padding:12px 16px;margin:5px;border:0;border-radius:9px;background:#b7ff3c;color:#111;font-weight:bold;cursor:pointer}
+#workout-card .secondary{background:#303a45;color:white}
+#workout-card a{color:#b7ff3c}
+#workout-progress{height:10px;background:#303a45;border-radius:10px;overflow:hidden}
+#workout-bar{height:100%;width:0;background:#b7ff3c}
+#workout-clock{font-size:42px;font-weight:bold;margin:15px 0}
+.workout-exercise{cursor:pointer}
+`;
+document.head.appendChild(style);
+
+const modal = document.createElement("div");
+modal.id = "workout-modal";
+modal.hidden = true;
+modal.innerHTML = `
+<div id="workout-card">
+<button id="workout-close" class="secondary">✕ Close</button>
+<p>YOUR WORKOUT TRACKER</p>
+<h2 id="workout-name"></h2>
+<p id="workout-instruction"></p>
+<p id="workout-count"></p>
+<div id="workout-progress"><div id="workout-bar"></div></div>
+<div id="workout-clock">00:00</div>
+<p id="workout-status">Ready when you are!</p>
+<button id="workout-start">Start Workout</button>
+<button id="workout-pause" class="secondary">Pause</button>
+<button id="workout-complete" class="secondary">Complete Set ✓</button>
+<button id="workout-rest" class="secondary">Start Rest</button>
+<p><a id="workout-photo" target="_blank" rel="noopener">Photo Demo</a> ·
+<a id="workout-video" target="_blank" rel="noopener">Video Demo</a></p>
+<p id="workout-saved"></p>
+</div>`;
+document.body.appendChild(modal);
+
+function stopTimer() {
+  if (timerId) clearInterval(timerId);
+  timerId = null;
+  isRunning = false;
+}
+
+function displayTime() {
+  const m = Math.floor(secondsLeft / 60);
+  const s = secondsLeft % 60;
+  document.getElementById("workout-clock").textContent =
+    String(m).padStart(2, "0") + ":" + String(s).padStart(2, "0");
+}
+
+function runTimer() {
+  if (isRunning) return;
+  isRunning = true;
+  timerId = setInterval(() => {
+    secondsLeft--;
+    displayTime();
+    if (secondsLeft <= 0) {
+      stopTimer();
+      document.getElementById("workout-status").textContent =
+        isResting ? "Rest complete! Start your next set." : "Time is up!";
+      if (isResting) isResting = false;
+    }
+  }, 1000);
+}
+
+function openTracker(name, detail) {
+  stopTimer();
+  currentName = name;
+  currentSet = 1;
+  totalSets = 3;
+  reps = 10;
+  restSeconds = (exerciseInfo[name] || ["", 45])[1];
+  isResting = false;
+  secondsLeft = 0;
+
+  document.getElementById("workout-name").textContent = name;
+  document.getElementById("workout-instruction").textContent =
+    (exerciseInfo[name] || ["Move slowly and stop if you feel pain.", 45])[0];
+  document.getElementById("workout-count").textContent =
+    "Set " + currentSet + " of " + totalSets + " · " + detail;
+  document.getElementById("workout-status").textContent = "Ready to begin.";
+  document.getElementById("workout-saved").textContent = "";
+  document.getElementById("workout-bar").style.width = "0%";
+  document.getElementById("workout-photo").href =
+    "https://www.google.com/search?tbm=isch&q=" + encodeURIComponent(name + " exercise");
+  document.getElementById("workout-video").href =
+    "https://www.youtube.com/results?search_query=" + encodeURIComponent(name + " exercise tutorial");
+
+  displayTime();
+  modal.hidden = false;
+}
+
+document.getElementById("workout-close").onclick = () => {
+  stopTimer();
+  modal.hidden = true;
 };
 
-const panel = document.getElementById("exercise-panel");
-const title = document.getElementById("panel-title");
-const tag = document.getElementById("panel-tag");
-const list = document.getElementById("exercise-list");
+document.getElementById("workout-start").onclick = () => {
+  if (secondsLeft <= 0) {
+    secondsLeft = 30;
+    isResting = false;
+  }
+  document.getElementById("workout-status").textContent =
+    isResting ? "Resting..." : "Workout timer running...";
+  runTimer();
+};
 
-function showDetails(exercise) {
-  const info = details[exercise[1]] || ["🏋️", "Move slowly, use a comfortable range, and stop if you feel pain."];
+document.getElementById("workout-pause").onclick = () => {
+  stopTimer();
+  document.getElementById("workout-status").textContent = "Paused.";
+};
 
-  let modal = document.getElementById("exercise-detail-modal");
-  if (!modal) {
-    modal = document.createElement("div");
-    modal.id = "exercise-detail-modal";
-    modal.style.cssText = "position:fixed;inset:0;z-index:9999;background:#000b;display:flex;align-items:center;justify-content:center;padding:20px;";
-    document.body.appendChild(modal);
+document.getElementById("workout-rest").onclick = () => {
+  stopTimer();
+  isResting = true;
+  secondsLeft = restSeconds;
+  displayTime();
+  document.getElementById("workout-status").textContent = "Rest time. Relax and breathe.";
+  runTimer();
+};
+
+document.getElementById("workout-complete").onclick = () => {
+  stopTimer();
+  if (currentSet >= totalSets) {
+    document.getElementById("workout-status").textContent = "Workout complete! Great job.";
+    document.getElementById("workout-bar").style.width = "100%";
+    document.getElementById("workout-saved").textContent =
+      "Completed: " + currentName;
+    try {
+      localStorage.setItem("lastWorkout", currentName + " - completed");
+    } catch (e) {}
+    return;
   }
 
-  modal.innerHTML = `
-    <div role="dialog" aria-modal="true" style="background:#17191e;color:#fff;border:1px solid #383b43;border-radius:20px;padding:24px;max-width:420px;width:100%;font-family:Arial,sans-serif;">
-      <div style="font-size:48px;margin-bottom:12px;">${info[0]}</div>
-      <h2 style="margin:0 0 12px;">${exercise[1]}</h2>
-      <p style="color:#aeb4c0;">${exercise[2]}</p>
-      <p style="line-height:1.6;">${info[1]}</p>
-      <button id="close-exercise-detail" style="padding:12px 20px;border:0;border-radius:10px;background:#b7ff42;color:#111;font-weight:bold;cursor:pointer;">Close</button>
-    </div>
-  `;
-
-  modal.querySelector("#close-exercise-detail").onclick = () => modal.remove();
-  modal.onclick = event => {
-    if (event.target === modal) modal.remove();
-  };
-}
+  currentSet++;
+  document.getElementById("workout-count").textContent =
+    "Set " + currentSet + " of " + totalSets;
+  document.getElementById("workout-bar").style.width =
+    ((currentSet - 1) / totalSets * 100) + "%";
+  document.getElementById("workout-status").textContent =
+    "Set marked complete. Start your rest timer.";
+  secondsLeft = 0;
+  displayTime();
+};
 
 document.querySelectorAll(".choice-card").forEach(card => {
   card.addEventListener("click", () => {
-    const data = workouts[card.dataset.type];
-    if (!data || !panel || !title || !tag || !list) return;
+    const key = card.dataset.workout ||
+      (card.textContent.toLowerCase().includes("dumbbell") ? "dumbbell" : "bodyweight");
+    const workout = workouts[key];
+    if (!workout) return;
 
-    tag.textContent = data.tag;
-    title.textContent = data.title;
+    const panel = document.getElementById("exercise-list");
+    if (!panel) return;
 
-    list.innerHTML = data.exercises.map(e => {
-      const icon = icons[e[1]] || "🏋️";
-      return `
-        <div class="exercise" tabindex="0" role="button" style="cursor:pointer;">
-          <div class="exercise-visual"><div class="visual-icon">${icon}</div></div>
-          <div class="exercise-num">${e[0]}</div>
-          <div><h4>${e[1]}</h4><small>${e[2]}</small></div>
-        </div>
-      `;
-    }).join("");
+    panel.innerHTML = "";
+    document.getElementById("panel-title").textContent = workout.title;
+    document.getElementById("panel-tag").textContent = workout.tag;
 
-    list.querySelectorAll(".exercise").forEach((item, index) => {
-      item.addEventListener("click", () => showDetails(data.exercises[index]));
-      item.addEventListener("keydown", event => {
-        if (event.key === "Enter" || event.key === " ") {
-          event.preventDefault();
-          showDetails(data.exercises[index]);
-        }
+    workout.exercises.forEach(([number, name, detail]) => {
+      const item = document.createElement("div");
+      item.className = "exercise workout-exercise";
+      item.tabIndex = 0;
+      item.innerHTML = `<span>${number}</span> <strong></strong><p></p><button type="button">Open Tracker</button>`;
+      item.querySelector("strong").textContent = name;
+      item.querySelector("p").textContent = detail;
+      item.addEventListener("click", () => openTracker(name, detail));
+      item.addEventListener("keydown", e => {
+        if (e.key === "Enter") openTracker(name, detail);
       });
+      panel.appendChild(item);
     });
 
-    panel.classList.remove("hidden");
-    panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    const exercisePanel = document.getElementById("exercise-panel");
+    if (exercisePanel) {
+      exercisePanel.hidden = false;
+      exercisePanel.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
   });
 });
 
 const closePanel = document.getElementById("close-panel");
-if (closePanel && panel) {
+if (closePanel) {
   closePanel.addEventListener("click", () => {
-    panel.classList.add("hidden");
+    const panel = document.getElementById("exercise-panel");
+    if (panel) panel.hidden = true;
   });
 }
